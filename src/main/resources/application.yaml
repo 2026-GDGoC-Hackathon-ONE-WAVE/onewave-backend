@@ -15,3 +15,16 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+    defer-datasource-initialization: true  # data.sql 실행 허용
+
+  sql:
+    init:
+      mode: always  # 항상 data.sql 실행
+
+# Gemini API 설정
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
+    model: gemini-2.0-flash-001
+    temperature: 0.7
+    max-tokens: 2000
