@@ -1,64 +1,15 @@
 package com.example.OneWave.domain;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
 import com.example.OneWave.domain.enums.ReflectionStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "application")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class Application {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "application_id")
-    private Long applicationId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @Column(name = "company_name", length = 100, nullable = false)
-    private String companyName;
-
-    @Column(name = "job_title", length = 100, nullable = false)
-    private String jobTitle;
-
-    @Column(name = "interview_date")
-    private LocalDate interviewDate;
-
-    @Column(name = "failed_stage", length = 50)
-    private String failedStage;
-
-    @Column(name = "simple_memo", columnDefinition = "TEXT")
-    private String simpleMemo;
-
-    @Column(name = "reflection_status", length = 20)
-    private String reflectionStatus; // 전/중/완료
-
-    @CreatedDate
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Builder
-    public Application(User user, String companyName, String jobTitle, LocalDate interviewDate,
-                       String failedStage, String simpleMemo, String reflectionStatus) {
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +20,8 @@ import java.util.List;
 @Table(name = "applications")
 public class Application {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long applicationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -78,39 +30,49 @@ public class Application {
 
     private String companyName;
     private String jobTitle;
-    private LocalDate interviewDate; // yyyy-MM-dd
+    private LocalDate interviewDate;
     private String failedStage;
 
     @Column(columnDefinition = "TEXT")
     private String simpleMemo;
 
     @Enumerated(EnumType.STRING)
-    private ReflectionStatus reflectionStatus; // "전"
+    private ReflectionStatus reflectionStatus;
 
-    // 1:N 관계 (부모가 저장될 때 자식들도 같이 저장됨)
+    // 1:N 관계
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationStage> stages = new ArrayList<>();
+
+    // 감정 및 키워드 (추가)
+    private String selectedEmotion;
+
+    @Column(columnDefinition = "TEXT")
+    private String selectedKeywords; // JSON 문자열로 저장 (예: ["경험 구조화 부족", "기술 스택 부족"])
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Builder
-    public Application(User user, String companyName, String jobTitle, LocalDate interviewDate, String failedStage, String simpleMemo) {
+    public Application(User user, String companyName, String jobTitle, LocalDate interviewDate,
+                       String failedStage, String simpleMemo) {
         this.user = user;
         this.companyName = companyName;
         this.jobTitle = jobTitle;
         this.interviewDate = interviewDate;
         this.failedStage = failedStage;
         this.simpleMemo = simpleMemo;
-        this.reflectionStatus = reflectionStatus;
-    }
-}
-        this.reflectionStatus = ReflectionStatus.BEFORE; // 기본값 설정
+        this.reflectionStatus = ReflectionStatus.BEFORE;
     }
 
-    // 연관관계 편의 메서드 (자식 추가)
+    // 연관관계 편의 메서드
     public void addStage(ApplicationStage stage) {
         this.stages.add(stage);
         stage.setApplication(this);
+    }
+
+    // 감정 및 키워드 설정 메서드
+    public void updateEmotionAndKeywords(String emotion, List<String> keywords) {
+        this.selectedEmotion = emotion;
+        this.selectedKeywords = String.join(",", keywords);
     }
 }
