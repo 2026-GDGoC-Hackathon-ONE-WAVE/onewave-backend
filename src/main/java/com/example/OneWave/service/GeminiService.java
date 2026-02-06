@@ -19,7 +19,7 @@ public class GeminiService {
     private final GeminiConfig geminiConfig;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s";
+    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
 
     /**
      * Gemini API 호출하여 응답 생성
