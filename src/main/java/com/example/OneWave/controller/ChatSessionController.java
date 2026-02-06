@@ -22,9 +22,9 @@ public class ChatSessionController {
     @PostMapping("/start")
     public ResponseEntity<ApiResponse<ChatSessionStartResponse>> startChatSession(
             @RequestBody ChatSessionStartRequest request) {
-        
+
         ChatSessionStartResponse response = chatSessionService.startChatSession(request);
-        
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(
                         201,
@@ -41,13 +41,32 @@ public class ChatSessionController {
     public ResponseEntity<ApiResponse<ChatMessageResponse>> sendMessage(
             @PathVariable Long sessionId,
             @RequestBody ChatMessageRequest request) {
-        
+
         ChatMessageResponse response = chatMessageService.sendMessage(sessionId, request);
-        
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(
-                        201,
-                        "메시지가 성공적으로 전송되었습니다.",
+                                201,
+                                "메시지가 성공적으로 전송되었습니다.",
+                                response
+                        )
+                );
+    }
+
+    /**
+     * 대화 내역 조회 API (추가된 기능)
+     * GET /api/chat-sessions/{sessionId}
+     */
+    @GetMapping("/{sessionId}")
+    public ResponseEntity<ApiResponse<ChatHistoryResponse>> getChatHistory(
+            @PathVariable Long sessionId) {
+
+        ChatHistoryResponse response = chatSessionService.getChatHistory(sessionId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "대화 내역 조회 성공",
                         response
                 )
         );
