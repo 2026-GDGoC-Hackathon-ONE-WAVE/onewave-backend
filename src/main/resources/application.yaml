@@ -3,9 +3,10 @@ spring:
     name: OneWave
 
   datasource:
-    url: jdbc:mysql://34.64.55.166:3306/admin?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: admin
-    password:
+    # 👇 변수 처리 (${변수명} 형태)
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -15,3 +16,16 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+    defer-datasource-initialization: true  # data.sql 실행 허용
+
+  sql:
+    init:
+      mode: always  # 항상 data.sql 실행
+
+# Gemini API 설정
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
+    model: gemini-2.0-flash-001
+    temperature: 0.7
+    max-tokens: 2000
