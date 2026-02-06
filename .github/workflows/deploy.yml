@@ -7,7 +7,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: asia-northeast3
-  REPO_NAME: my-repo
+  REPO_NAME: one-wave
   SERVICE_NAME: spring-app
 
 jobs:
