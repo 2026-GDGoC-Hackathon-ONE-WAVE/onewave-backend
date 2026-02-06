@@ -26,7 +26,7 @@ public class ReflectionService {
         Application application = applicationRepository.findById(request.getApplicationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 지원 내역을 찾을 수 없습니다."));
 
-        // 2. 채팅 세션 조회 (감정 정보를 가져오기 위해)
+        // 2. 채팅 세션 조회
         ChatSession chatSession = chatSessionRepository.findById(request.getSessionId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 세션을 찾을 수 없습니다."));
 
@@ -36,27 +36,34 @@ public class ReflectionService {
                 .sessionId(request.getSessionId())
                 .userSummary(request.getUserSummary())
                 .userImprovement(request.getUserImprovement())
-                .selectedEmotion(chatSession.getSelectedEmotion().name()) // Enum -> String
+                .selectedEmotion(chatSession.getSelectedEmotion().name())
                 .build();
 
-        // 4. 키워드 저장 (AI가 준 키워드는 기본적으로 isSelected = false)
+        // 4. 키워드 저장 (Detail용)
         if (request.getAiGeneratedKeywords() != null) {
             for (String keywordStr : request.getAiGeneratedKeywords()) {
                 ReflectionKeyword keyword = ReflectionKeyword.builder()
                         .keyword(keywordStr)
                         .isSelected(false)
                         .build();
-                reflection.addKeyword(keyword); // 연관관계 편의 메서드 사용
+                reflection.addKeyword(keyword);
             }
         }
 
-        // 5. 저장
+        // 5. 회고 저장
         Reflection savedReflection = reflectionRepository.save(reflection);
 
-        // 6. [중요] Application 상태를 '회고 완료'로 변경
-        // Application 엔티티에 updateReflectionStatus 메서드가 필요합니다. (아래 참고)
-        // application.updateReflectionStatus(ReflectionStatus.DONE);
-        // *Application.java에 해당 메서드가 없다면 추가해주세요.*
+        // (지원 내역 상태 & 키워드 업데이트)
+        // 6-1. 상태를 'DONE(완료)'으로 변경
+        application.updateReflectionStatus(ReflectionStatus.DONE);
+
+        // 6-2. 목록 조회용 키워드 및 감정 업데이트
+        if (request.getAiGeneratedKeywords() != null) {
+            application.updateEmotionAndKeywords(
+                    chatSession.getSelectedEmotion().name(),
+                    request.getAiGeneratedKeywords()
+            );
+        }
 
         return ReflectionResponse.from(savedReflection);
     }
