@@ -44,17 +44,27 @@ public class ChatSessionService {
                 .build();
         ChatSession savedSession = chatSessionRepository.save(chatSession);
 
-        // 3. 첫 AI 메시지 생성 (프롬프트 기반)
-        String firstMessageContent = promptService.buildFirstMessage(user, application, request.getSelectedEmotion());
-
-        ChatMessage firstMessage = ChatMessage.builder()
+        // 3. 첫 번째 AI 메시지: 인사말 (고정)
+        String greetingMessage = "안녕하세요! 회고를 시작해볼까요? 먼저 지금 기분을 골라주세요.";
+        
+        ChatMessage greetingChatMessage = ChatMessage.builder()
                 .chatSession(savedSession)
                 .senderType("AI")
-                .messageContent(firstMessageContent)
+                .messageContent(greetingMessage)
                 .build();
-        ChatMessage savedMessage = chatMessageRepository.save(firstMessage);
+        ChatMessage savedGreeting = chatMessageRepository.save(greetingChatMessage);
 
-        // 4. Response 생성
+        // 4. 두 번째 AI 메시지: 감정 기반 개인화 메시지
+        String emotionBasedMessage = promptService.buildFirstMessage(user, application, request.getSelectedEmotion());
+
+        ChatMessage emotionBasedChatMessage = ChatMessage.builder()
+                .chatSession(savedSession)
+                .senderType("AI")
+                .messageContent(emotionBasedMessage)
+                .build();
+        ChatMessage savedEmotionMessage = chatMessageRepository.save(emotionBasedChatMessage);
+
+        // 5. Response 생성 (두 메시지 모두 포함)
         return ChatSessionStartResponse.builder()
                 .sessionId(savedSession.getSessionId())
                 .applicationId(application.getApplicationId())
@@ -62,12 +72,20 @@ public class ChatSessionService {
                 .jobTitle(application.getJobTitle())
                 .selectedEmotion(savedSession.getSelectedEmotion())
                 .createdAt(savedSession.getCreatedAt())
-                .firstMessage(ChatSessionStartResponse.FirstMessageDto.builder()
-                        .messageId(savedMessage.getMessageId())
-                        .senderType(savedMessage.getSenderType())
-                        .content(savedMessage.getMessageContent())
-                        .createdAt(savedMessage.getCreatedAt())
-                        .build())
+                .messages(List.of(
+                        ChatSessionStartResponse.MessageDto.builder()
+                                .messageId(savedGreeting.getMessageId())
+                                .senderType(savedGreeting.getSenderType())
+                                .content(savedGreeting.getMessageContent())
+                                .createdAt(savedGreeting.getCreatedAt())
+                                .build(),
+                        ChatSessionStartResponse.MessageDto.builder()
+                                .messageId(savedEmotionMessage.getMessageId())
+                                .senderType(savedEmotionMessage.getSenderType())
+                                .content(savedEmotionMessage.getMessageContent())
+                                .createdAt(savedEmotionMessage.getCreatedAt())
+                                .build()
+                ))
                 .build();
     }
 

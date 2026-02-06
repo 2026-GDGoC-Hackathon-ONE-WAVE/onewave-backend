@@ -195,10 +195,10 @@ public class PromptService {
 
     /**
      * 첫 메시지 생성 (Phase 1 오프닝)
+     * 감정 선택 후 표시되는 메시지
      */
     public String buildFirstMessage(User user, Application application, EmotionType selectedEmotion) {
         return String.format(
-                "안녕하세요! 회고를 시작해볼까요? 먼저 지금 기분을 골라주세요.\n\n" +
                 "%s님, 이번 %s 직군 도전, 정말 고생 많으셨어요. " +
                 "결과를 확인하고 '%s' 감정이 드셨다니, 그 마음 충분히 이해합니다. " +
                 "이렇게 다시 책상 앞에 앉으신 것만으로도 대단한 일이에요.\n\n" +
