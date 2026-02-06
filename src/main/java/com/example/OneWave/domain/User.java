@@ -49,7 +49,7 @@ public class User {
         this.careerStage = careerStage;
         this.preparationMethod = preparationMethod;
     }
-    
+
     public void updateOnboardingInfo(String name, JobCategory jobCategory, CareerStage careerStage, String preparationMethod) {
         this.name = name;
         this.jobCategory = jobCategory;
