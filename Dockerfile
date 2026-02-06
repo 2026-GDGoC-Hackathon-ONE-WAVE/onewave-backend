@@ -4,4 +4,4 @@ ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
 
 # 2. 실행
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "/app.jar"]
