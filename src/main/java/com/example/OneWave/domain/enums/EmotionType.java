@@ -12,10 +12,10 @@ import java.util.Arrays;
 public enum EmotionType {
     CONFUSED("당황"),
     REGRETFUL("아쉬움"),
-    ANGRY("분함"),
-    SAD("슬픔"),
-    DISAPPOINTED("실망"),
-    FRUSTRATED("답답함");
+    TIRED("피곤"),
+    CALM("담담"),
+    FRUSTRATED("답답"),
+    MANAGEABLE("그래도 해볼만");
 
     private final String description;
 
