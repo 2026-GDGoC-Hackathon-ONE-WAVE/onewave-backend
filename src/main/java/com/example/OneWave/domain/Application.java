@@ -39,15 +39,18 @@ public class Application {
     @Enumerated(EnumType.STRING)
     private ReflectionStatus reflectionStatus;
 
-    // 1:N 관계
+    // 1:N 관계 (기존 코드)
     @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplicationStage> stages = new ArrayList<>();
 
-    // 감정 및 키워드 (목록 조회용 요약 데이터)
+    // 👇 [추가] 1:1 관계 (DashboardService의 app.getReflection() 에러 해결)
+    @OneToOne(mappedBy = "application")
+    private Reflection reflection;
+
     private String selectedEmotion;
 
     @Column(columnDefinition = "TEXT")
-    private String selectedKeywords; // 예: "성장,몰입,도전" (쉼표로 구분 or JSON)
+    private String selectedKeywords;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -61,23 +64,19 @@ public class Application {
         this.interviewDate = interviewDate;
         this.failedStage = failedStage;
         this.simpleMemo = simpleMemo;
-        this.reflectionStatus = ReflectionStatus.BEFORE; // 생성 시 기본값 '전'
+        this.reflectionStatus = ReflectionStatus.BEFORE;
     }
 
-    // 연관관계 편의 메서드
     public void addStage(ApplicationStage stage) {
         this.stages.add(stage);
         stage.setApplication(this);
     }
 
-    // 감정 및 키워드 설정 메서드
     public void updateEmotionAndKeywords(String emotion, List<String> keywords) {
         this.selectedEmotion = emotion;
-        // 리스트를 콤마 문자열로 변환해서 저장 (목록 조회 성능 최적화)
         this.selectedKeywords = String.join(",", keywords);
     }
 
-    // 👇 [필수 추가] 상태 변경 메서드 (ReflectionService에서 사용)
     public void updateReflectionStatus(ReflectionStatus status) {
         this.reflectionStatus = status;
     }
