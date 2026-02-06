@@ -25,16 +25,16 @@ public class User {
     @Column(length = 50)
     private String name;
 
-    @Enumerated(EnumType.STRING) // DB에 "DEV"로 저장
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private JobCategory jobCategory;
 
-    @Enumerated(EnumType.STRING) // DB에 "JUNIOR"로 저장
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private CareerStage careerStage;
 
     @Column(columnDefinition = "TEXT")
-    private String preparationMethod; // "포트폴리오,코딩테스트"
+    private String preparationMethod;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -49,8 +49,7 @@ public class User {
         this.careerStage = careerStage;
         this.preparationMethod = preparationMethod;
     }
-
-    // 정보 업데이트 메서드
+    
     public void updateOnboardingInfo(String name, JobCategory jobCategory, CareerStage careerStage, String preparationMethod) {
         this.name = name;
         this.jobCategory = jobCategory;
