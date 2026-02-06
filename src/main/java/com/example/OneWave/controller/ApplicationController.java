@@ -1,6 +1,7 @@
 package com.example.OneWave.controller;
 
-import com.example.OneWave.dto.ApplicationDetailResponse;
+import com.example.OneWave.dto.ApplicationDetailResponse; // 상세 조회 DTO
+import com.example.OneWave.dto.ApplicationListResponse;   // 목록 조회 DTO
 import com.example.OneWave.dto.ApplicationRequest;
 import com.example.OneWave.dto.ApplicationResponse;
 import com.example.OneWave.service.ApplicationService;
@@ -18,6 +19,7 @@ public class ApplicationController {
 
     private final ApplicationService applicationService;
 
+    // 1. 등록 (POST)
     @PostMapping
     public ResponseEntity<Map<String, Object>> createApplication(@RequestBody ApplicationRequest request) {
         ApplicationResponse savedApplication = applicationService.createApplication(request);
@@ -31,6 +33,21 @@ public class ApplicationController {
         return ResponseEntity.ok(response);
     }
 
+    // 2. 목록 조회 (GET /api/applications?userId=1)
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getApplications(@RequestParam Long userId) {
+        ApplicationListResponse applicationList = applicationService.getApplications(userId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 200);
+        response.put("success", true);
+        response.put("message", "지원 내역 목록 조회 성공");
+        response.put("data", applicationList);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 3. 상세 조회 (GET /api/applications/1)
     @GetMapping("/{applicationId}")
     public ResponseEntity<Map<String, Object>> getApplicationDetail(@PathVariable Long applicationId) {
         ApplicationDetailResponse applicationDetail = applicationService.getApplicationDetail(applicationId);
