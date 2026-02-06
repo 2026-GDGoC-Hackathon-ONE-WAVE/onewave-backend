@@ -1,5 +1,6 @@
 package com.example.OneWave.controller;
 
+import com.example.OneWave.dto.ApplicationDetailResponse;
 import com.example.OneWave.dto.ApplicationRequest;
 import com.example.OneWave.dto.ApplicationResponse;
 import com.example.OneWave.service.ApplicationService;
@@ -26,6 +27,19 @@ public class ApplicationController {
         response.put("success", true);
         response.put("message", "경험 내역이 성공적으로 등록되었습니다.");
         response.put("data", savedApplication);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{applicationId}")
+    public ResponseEntity<Map<String, Object>> getApplicationDetail(@PathVariable Long applicationId) {
+        ApplicationDetailResponse applicationDetail = applicationService.getApplicationDetail(applicationId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 200);
+        response.put("success", true);
+        response.put("message", "지원 내역 상세 조회 성공");
+        response.put("data", applicationDetail);
 
         return ResponseEntity.ok(response);
     }

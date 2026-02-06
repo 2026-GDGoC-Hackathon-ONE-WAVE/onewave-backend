@@ -3,6 +3,7 @@ package com.example.OneWave.service;
 import com.example.OneWave.domain.Application;
 import com.example.OneWave.domain.ApplicationStage;
 import com.example.OneWave.domain.User;
+import com.example.OneWave.dto.ApplicationDetailResponse;
 import com.example.OneWave.dto.ApplicationRequest;
 import com.example.OneWave.dto.ApplicationResponse;
 import com.example.OneWave.repository.ApplicationRepository;
@@ -50,5 +51,13 @@ public class ApplicationService {
         Application savedApp = applicationRepository.save(application);
 
         return new ApplicationResponse(savedApp);
+    }
+
+    @Transactional(readOnly = true)
+    public ApplicationDetailResponse getApplicationDetail(Long applicationId) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지원 내역입니다. id=" + applicationId));
+
+        return new ApplicationDetailResponse(application);
     }
 }

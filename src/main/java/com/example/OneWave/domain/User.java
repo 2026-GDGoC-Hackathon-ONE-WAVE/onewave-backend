@@ -21,7 +21,6 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(length = 50)
