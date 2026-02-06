@@ -13,7 +13,8 @@ public class WebConfig implements WebMvcConfigurer{
                 .allowedOrigins(
                         "http://localhost:8081",
                         "http://localhost:5173",
-                        "https://*.run.app"
+                        "https://*.run.app",
+                        "https://onewave-fawn.vercel.app"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
