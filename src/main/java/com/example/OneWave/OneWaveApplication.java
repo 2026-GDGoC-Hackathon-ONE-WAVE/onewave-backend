@@ -3,7 +3,10 @@ package com.example.OneWave;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing; // 👈 import 필수
 
+
+@EnableJpaAuditing
 @SpringBootApplication
 @EnableJpaAuditing
 public class OneWaveApplication {
