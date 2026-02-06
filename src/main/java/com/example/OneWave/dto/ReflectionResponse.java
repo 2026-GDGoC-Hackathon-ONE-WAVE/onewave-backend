@@ -19,6 +19,7 @@ public class ReflectionResponse {
     private String userImprovement;
     private String selectedEmotion;
     private String simpleMemo;
+    private Boolean isCompleted;
     private List<KeywordDto> keywords;
     private LocalDateTime createdAt;
 
@@ -31,6 +32,7 @@ public class ReflectionResponse {
                 .userImprovement(reflection.getUserImprovement())
                 .selectedEmotion(reflection.getSelectedEmotion())
                 .simpleMemo(reflection.getApplication().getSimpleMemo())
+                .isCompleted(reflection.getIsCompleted())
                 .keywords(reflection.getKeywords().stream()
                         .map(KeywordDto::from)
                         .collect(Collectors.toList()))

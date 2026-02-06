@@ -2,6 +2,7 @@ package com.example.OneWave.service;
 
 import com.example.OneWave.domain.*;
 import com.example.OneWave.domain.enums.ReflectionStatus;
+import com.example.OneWave.dto.ReflectionCompleteResponse;
 import com.example.OneWave.dto.ReflectionRequest;
 import com.example.OneWave.dto.ReflectionResponse;
 import com.example.OneWave.repository.ApplicationRepository;
@@ -20,6 +21,9 @@ public class ReflectionService {
     private final ApplicationRepository applicationRepository;
     private final ChatSessionRepository chatSessionRepository;
 
+    /**
+     * 회고 생성 및 저장
+     */
     @Transactional
     public ReflectionResponse createReflection(ReflectionRequest request) {
         // 1. 지원 내역(Application) 조회
@@ -66,5 +70,34 @@ public class ReflectionService {
         }
 
         return ReflectionResponse.from(savedReflection);
+    }
+
+    /**
+     * 회고 완료 처리 (isCompleted = true)
+     */
+    @Transactional
+    public ReflectionCompleteResponse completeReflection(Long reflectionId) {
+        // 1. 회고 조회
+        Reflection reflection = reflectionRepository.findById(reflectionId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회고입니다. id=" + reflectionId));
+
+        // 2. 완료 상태로 변경 (Entity 메서드 호출 -> Dirty Checking으로 자동 업데이트)
+        reflection.complete();
+
+        // 3. 응답 반환
+        return ReflectionCompleteResponse.builder()
+                .reflectionId(reflection.getReflectionId())
+                .isCompleted(reflection.getIsCompleted())
+                .build();
+    }
+
+    /**
+     * 회고 단건 상세 조회
+     */
+    public ReflectionResponse getReflection(Long reflectionId) {
+        Reflection reflection = reflectionRepository.findById(reflectionId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회고입니다. id=" + reflectionId));
+
+        return ReflectionResponse.from(reflection);
     }
 }

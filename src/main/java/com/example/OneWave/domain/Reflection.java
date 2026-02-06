@@ -38,7 +38,11 @@ public class Reflection {
     private String userImprovement;
 
     @Column(name = "selected_emotion")
-    private String selectedEmotion; // ChatSession에서 가져와서 저장
+    private String selectedEmotion;
+
+    // 👇 [추가] 완료 여부 필드 (기본값 false)
+    @Column(name = "is_completed")
+    private Boolean isCompleted = false;
 
     @OneToMany(mappedBy = "reflection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReflectionKeyword> keywords = new ArrayList<>();
@@ -54,10 +58,16 @@ public class Reflection {
         this.userSummary = userSummary;
         this.userImprovement = userImprovement;
         this.selectedEmotion = selectedEmotion;
+        this.isCompleted = false; // 생성 시 기본 false
     }
 
     public void addKeyword(ReflectionKeyword keyword) {
         this.keywords.add(keyword);
         keyword.setReflection(this);
+    }
+
+    // 👇 [추가] 완료 처리 메서드
+    public void complete() {
+        this.isCompleted = true;
     }
 }
