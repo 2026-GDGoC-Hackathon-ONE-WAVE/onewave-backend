@@ -1,6 +1,7 @@
 package com.example.OneWave.controller;
 
 import com.example.OneWave.dto.ApiResponse;
+import com.example.OneWave.dto.ReflectionCompleteResponse;
 import com.example.OneWave.dto.ReflectionRequest;
 import com.example.OneWave.dto.ReflectionResponse;
 import com.example.OneWave.service.ReflectionService;
@@ -31,5 +32,42 @@ public class ReflectionController {
                         "회고가 성공적으로 생성되었습니다.",
                         response
                 ));
+    }
+
+    /**
+     * 회고 최종 완료 처리 API (isCompleted = true)
+     * PATCH /api/reflections/{reflectionId}/complete
+     */
+    @PatchMapping("/{reflectionId}/complete")
+    public ResponseEntity<ApiResponse<ReflectionCompleteResponse>> completeReflection(
+            @PathVariable Long reflectionId) {
+
+        ReflectionCompleteResponse response = reflectionService.completeReflection(reflectionId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "회고가 성공적으로 완료되었습니다.",
+                        response
+                )
+        );
+    }
+
+    /**
+     *  회고 상세 조회 API
+     * GET /api/reflections/{reflectionId}
+     */
+    @GetMapping("/{reflectionId}")
+    public ResponseEntity<ApiResponse<ReflectionResponse>> getReflection(@PathVariable Long reflectionId) {
+
+        ReflectionResponse response = reflectionService.getReflection(reflectionId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "회고 상세 조회 성공",
+                        response
+                )
+        );
     }
 }
