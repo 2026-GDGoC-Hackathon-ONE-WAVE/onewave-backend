@@ -3,7 +3,6 @@ spring:
     name: OneWave
 
   datasource:
-    # 👇 변수 처리 (${변수명} 형태)
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
