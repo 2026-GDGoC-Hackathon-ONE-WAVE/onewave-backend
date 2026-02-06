@@ -28,6 +28,9 @@ jobs:
       - name: Docker Auth
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Build and Push
         run: |
           ./gradlew build -x test
