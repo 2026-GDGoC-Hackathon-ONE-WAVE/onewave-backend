@@ -1,3 +1,17 @@
 spring:
   application:
     name: OneWave
+
+  datasource:
+    url: jdbc:mysql://34.64.55.166:3306/admin?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: admin
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
